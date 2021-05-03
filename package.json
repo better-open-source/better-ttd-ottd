@@ -1,0 +1,26 @@
+{
+  "name": "better-ttd-ottd",
+  "version": "1.0.0",
+  "description": "OpenTTD Admin Service",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/better-open-source/better-ttd-ottd.git"
+  },
+  "keywords": [
+    "ottd"
+  ],
+  "author": "Alex 'iTKerry' Katrynets",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/better-open-source/better-ttd-ottd/issues"
+  },
+  "homepage": "https://github.com/better-open-source/better-ttd-ottd#readme",
+  "dependencies": {
+    "node-openttd-admin": "^0.2.4"
+  }
+}
