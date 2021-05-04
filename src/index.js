@@ -1,25 +1,21 @@
-const { UpdateFrequencies, UpdateTypes } = require("node-openttd-admin/enums");
+/*
 const uuid = require('uuid');
+const {
+  EventStoreDBClient,
+  jsonEvent,
+  FORWARDS,
+  START,
+} = require("@eventstore/db-client");
+const client = EventStoreDBClient.connectionString("esdb://localhost:2113?tls=false");
+*/
 
-var ottd = require("node-openttd-admin"),
-  ottdConnection =  new ottd.connection();
- 
-ottdConnection.connect("localhost", 3977);
- 
-ottdConnection.on('connect', function(){
-  ottdConnection.authenticate("BetterTTD-Bot", "p7gvv");
-});
+const logger = require('./modules/logger');
+global.logger = logger;
 
-ottdConnection.on('welcome', function(data){
-  ottdConnection.send_rcon("say \"hello world\"");
-  ottdConnection.send_update_frequency(UpdateTypes.CHAT, UpdateFrequencies.AUTOMATIC);
-  ottdConnection.close();
-});
+const config = {name: 'TG Bot', address: 'localhost', port: 3977, password: 'p7gvv'};
 
-ottdConnection.on('chat', function(data) {
-  console.log(data);
-});
+const { Client } = require("./openttd");
 
-ottdConnection.on('error', function(error) {
-  console.log(error);
-});
+let client = new Client(config);
+
+client.connect();
