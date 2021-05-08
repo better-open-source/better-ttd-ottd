@@ -22,6 +22,7 @@
   "homepage": "https://github.com/better-open-source/better-ttd-ottd#readme",
   "dependencies": {
     "@eventstore/db-client": "^1.2.1",
+    "express": "^4.17.1",
     "moment": "^2.29.1",
     "node-openttd-admin": "^0.2.4",
     "uuid": "^8.3.2"

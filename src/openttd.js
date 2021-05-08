@@ -5,9 +5,9 @@ class Client {
   constructor(config) {
     // Defaults for new objects
     this.name = config.name || 'OpenTTD Server';
-    this.address = config.address || 'localhost';
+    this.host = config.host || 'localhost';
     this.port = config.port || 3977;
-    this.password = config.password || 'password';
+    this.password = config.pass || 'password';
     
     this.connection = new openttdAdmin.connection();
 
@@ -294,7 +294,7 @@ Client.prototype.sendRcon = function(rconcmd) {
 };
 
 Client.prototype.connect = function() {
-    return this.connection.connect(this.address, this.port);
+    return this.connection.connect(this.host, this.port);
 };
 
 Client.prototype.sendChat = function(name, message) {
