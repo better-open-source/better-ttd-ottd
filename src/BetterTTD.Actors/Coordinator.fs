@@ -26,7 +26,12 @@ let init (host : IPAddress) (port : int) (mailbox : Actor<Message>) =
     let senderRef   = Sender.init   stream |> spawn mailbox "sender"
     let receiverRef = Receiver.init stream |> spawn mailbox "receiver"
     
-    let rec connected sender receiver =
+    let rec errored sender receiver =
+        actor {
+            return! errored sender receiver
+        }
+        
+    and connected sender receiver =
         actor {
             return! connected sender receiver
         }
