@@ -5,11 +5,10 @@ open BetterTTD.Network.Enums
 open System
 open System.Text
 
-type Packet = {
-    Size     : uint16
-    Position : int
-    Buffer   : byte array
-}
+type Packet =
+    { Size     : uint16
+      Position : int
+      Buffer   : byte array }
 
 // defaults
 
