@@ -1,8 +1,8 @@
-﻿module BetterTTD.PacketTransformers
+﻿module BetterTTD.PacketTransformer
 
 open System
 open BetterTTD.Network.Enums
-open BetterTTD.Network.PacketModule
+open BetterTTD.Network.Packet
 open FSharpx.Collections
 
 type ServerChatMessage =
@@ -60,7 +60,7 @@ type PacketMessage =
     | ServerClientErrorMsg  of ServerClientErrorMessage
     
     
-let readServerProtocol packet =
+let private readServerProtocol packet =
     let version, packet = readByte packet
     let rec readFreq (dict : Map<AdminUpdateType, AdminUpdateFrequency []>) pac =
         let next, pac = readBool pac
@@ -85,7 +85,7 @@ let readServerProtocol packet =
         { Version        = version
           UpdateSettings = dict }
 
-let readServerWelcome packet =
+let private readServerWelcome packet =
     let serverName, pac      = readString packet
     let networkRevision, pac = readString pac
     let isDedicated, pac     = readBool pac
@@ -106,7 +106,7 @@ let readServerWelcome packet =
           MapWidth        = int mapWidth
           MapHeight       = int mapHeight }
 
-let readServerChat packet =
+let private readServerChat packet =
     let act, pac      = readByte packet
     let action        = enum<NetworkAction>(int act)
     let dest, pac     = readByte pac
@@ -121,11 +121,11 @@ let readServerChat packet =
           Message         = message
           Data            = data }
     
-let readServerClientJoin packet =
+let private readServerClientJoin packet =
     let clientId, _ = readU32 packet
     ServerClientJoinMsg { ClientID = clientId }
 
-let readServerClientInfo packet =
+let private readServerClientInfo packet =
     let clientId, pac = readU32 packet
     let address, pac = readString pac
     let name, pac = readString pac
@@ -140,7 +140,7 @@ let readServerClientInfo packet =
           JoinDate  = joinDate
           CompanyId = companyId }
 
-let readServerClientUpdate packet =
+let private readServerClientUpdate packet =
     let clientId, pac = readU32 packet
     let name, pac     = readString pac
     let companyId, _  = readByte pac
@@ -149,11 +149,11 @@ let readServerClientUpdate packet =
           Name      = name
           CompanyId = companyId }
 
-let readServerClientQuit packet =
+let private readServerClientQuit packet =
     let clientId, _ = readU32 packet
     ServerClientQuitMsg { ClientID = clientId }
 
-let readServerClientError packet =
+let private readServerClientError packet =
     let clientId, _ = readU32 packet
     ServerClientErrorMsg { ClientID = clientId }
 

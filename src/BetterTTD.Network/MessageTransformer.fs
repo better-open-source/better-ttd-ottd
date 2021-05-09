@@ -1,7 +1,7 @@
-﻿module BetterTTD.MessageTransformers
+﻿module BetterTTD.MessageTransformer
 
 open BetterTTD.Network.Enums
-open BetterTTD.Network.PacketModule
+open BetterTTD.Network.Packet
 
 type AdminJoinMessage =
     { Password     : string

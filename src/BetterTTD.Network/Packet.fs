@@ -1,4 +1,4 @@
-﻿module BetterTTD.Network.PacketModule
+﻿module BetterTTD.Network.Packet
     
 open BetterTTD.Network.Enums
 

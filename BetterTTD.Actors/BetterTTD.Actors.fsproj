@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\src\BetterTTD.Network\BetterTTD.Network.fsproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="Messages.fs" />
+      <Compile Include="Sender.fs" />
+      <Compile Include="Receiver.fs" />
+      <Compile Include="Coordinator.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Akka.FSharp" Version="1.4.19" />
+    </ItemGroup>
+
+</Project>
