@@ -1,6 +1,6 @@
 ﻿module BetterTTD.Actors.Messages
 
-open BetterTTD.PacketTransformer
+open BetterTTD.Network.PacketTransformer
 
 type Authorize =
     { Name    : string

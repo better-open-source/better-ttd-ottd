@@ -2,7 +2,7 @@
 
 open System.IO
 open Akka.FSharp
-open BetterTTD.MessageTransformer
+open BetterTTD.Network.MessageTransformer
 open BetterTTD.Network.Packet
  
 let init (stream : Stream) (mailbox : Actor<AdminMessage>) =

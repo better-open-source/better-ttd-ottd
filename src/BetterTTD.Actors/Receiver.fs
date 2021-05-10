@@ -4,7 +4,7 @@ open System
 open System.IO
 open Akka.FSharp
 open BetterTTD.Network.Packet
-open BetterTTD.PacketTransformer
+open BetterTTD.Network.PacketTransformer
 open FSharpx.Collections
 
 let private read (stream : Stream) (size : int) =

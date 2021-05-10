@@ -1,4 +1,4 @@
-﻿module BetterTTD.PacketTransformer
+﻿module BetterTTD.Network.PacketTransformer
 
 open System
 open BetterTTD.Network.Enums
@@ -8,7 +8,7 @@ open FSharpx.Collections
 type ServerChatMessage =
     { NetworkAction   : NetworkAction
       ChatDestination : ChatDestination
-      ClientID        : uint32
+      ClientId        : uint32
       Message         : string
       Data            : uint64 }
 
@@ -183,7 +183,7 @@ let private readServerChat packet =
     ServerChatMsg
         { NetworkAction   = action
           ChatDestination = destination
-          ClientID        = clientId
+          ClientId        = clientId
           Message         = message
           Data            = data }
     
