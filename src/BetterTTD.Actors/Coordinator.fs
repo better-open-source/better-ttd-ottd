@@ -21,9 +21,9 @@ let private connectToStream (ipAddress : IPAddress) (port : int) =
     tcpClient.GetStream ()
 
 let private defaultPolls =
-    [ { UpdateType = AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO
+    [ { UpdateType = AdminUpdateType.ADMIN_UPDATE_COMPANY_INFO
         Data       = uint32 0xFFFFFFFF }
-      { UpdateType = AdminUpdateType.ADMIN_UPDATE_COMPANY_INFO
+      { UpdateType = AdminUpdateType.ADMIN_UPDATE_CLIENT_INFO
         Data       = uint32 0xFFFFFFFF } ]
     |> List.map AdminPollMsg
 

@@ -172,6 +172,7 @@ let dispatch (state : State) (msg : PacketMessage) =
                   Name     = msg.Name
                   Host     = msg.Address
                   Language = msg.Language }
+            printfn $"%A{client}"
             let clients = state.Clients |> List.filter (fun cli -> cli.Id <> client.Id)
             { state with Clients = clients @ [ client ] }
         | None -> state
