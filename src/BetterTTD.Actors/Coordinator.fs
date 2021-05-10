@@ -3,17 +3,18 @@
 open System
 open System.Net
 open System.Net.Sockets
+open Akka.Actor
 open Akka.FSharp
 open BetterTTD.Actors.Messages
 open BetterTTD.Network.MessageTransformer
 open BetterTTD.Network.Enums
 open BetterTTD.Network.PacketTransformer
 
-let private schedule (mailbox : Actor<_>) ref interval msg =
+let private schedule (mailbox : Actor<_>) ref interval msg cancelKey =
     mailbox.Context.System.Scheduler.ScheduleTellRepeatedly(
         TimeSpan.FromMilliseconds 0.,
         TimeSpan.FromMilliseconds interval,
-        ref, msg)
+        ref, msg, mailbox.Self, cancelKey)
     
 let private connectToStream (ipAddress : IPAddress) (port : int) =
     let tcpClient = new TcpClient ()
@@ -36,12 +37,18 @@ let private defaultUpdateFrequencies =
         Frequency  = AdminUpdateFrequency.ADMIN_FREQUENCY_AUTOMATIC } ]
     |> List.map AdminUpdateFreqMsg
 
-let init (host : IPAddress, port : int) (mailbox : Actor<Message>) =
+let init (host : IPAddress, port : int, tag : string) (mailbox : Actor<Message>) =
 
+    let cancelKey   = new Cancelable(mailbox.Context.System.Scheduler)
     let state       = State.init
     let stream      = connectToStream host port
     let senderRef   = Sender.init   stream |> spawn mailbox "sender"
     let receiverRef = Receiver.init stream |> spawn mailbox "receiver"
+    
+    mailbox.Defer (fun () ->
+        cancelKey.Cancel()
+        senderRef   <! PoisonPill.Instance
+        receiverRef <! PoisonPill.Instance)
     
     let rec errored sender receiver state =
         actor {
@@ -83,7 +90,7 @@ let init (host : IPAddress, port : int) (mailbox : Actor<Message>) =
             match! mailbox.Receive () with
             | AuthorizeMsg { Pass = pass; Name = name; Version = ver } ->
                 sender <! AdminJoinMsg { Password = pass; AdminName = name; AdminVersion = ver }
-                schedule mailbox receiver 1.0 "start receiving"
+                schedule mailbox receiver 1.0 "receive" cancelKey
                 return! connecting sender receiver state
             | _ -> failwith "INVALID IDLE STATE CAPTURED"
         }
