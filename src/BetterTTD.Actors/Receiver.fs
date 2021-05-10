@@ -49,12 +49,14 @@ let init (stream : Stream) (mailbox : Actor<_>) =
     fun _ ->
         let pac = waitForPacket stream
         let msg = packetToMsg pac
+        printfn $"%A{msg}"
         mailbox.Context.Parent <! Messages.PacketReceivedMsg msg
-    |> initTimedEvent 1.0
+    |> initTimedEvent (TimeSpan.FromSeconds(1.0).TotalMilliseconds)
     
     let rec loop () =
         actor {
-            return! loop ()
+            match! mailbox.Receive () with
+            | _ -> return! loop () 
         }
         
     loop ()

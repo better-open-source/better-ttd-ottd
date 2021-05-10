@@ -49,17 +49,83 @@ type ServerClientQuitMessage =
 type ServerClientErrorMessage =
     { ClientID        : uint32 }
 
+type ServerCompanyNewMessage =
+    { CompanyId       : byte }
+    
+type ServerCompanyInfoMessage =
+    { CompanyId       : byte
+      CompanyName     : string
+      ManagerName     : string
+      Color           : Color
+      HasPassword     : bool }
+
+type ServerCompanyUpdateMessage =
+    { CompanyId       : byte
+      CompanyName     : string
+      ManagerName     : string
+      Color           : Color
+      HasPassword     : bool }
+
+type ServerCompanyRemoveMessage =
+    { CompanyId       : byte
+      Reason          : AdminCompanyRemoveReason }
+    
 type PacketMessage =
-    | ServerProtocolMsg     of ServerProtocolMessage
-    | ServerWelcomeMsg      of ServerWelcomeMessage
-    | ServerChatMsg         of ServerChatMessage
-    | ServerClientJoinMsg   of ServerClientJoinMessage
-    | ServerClientInfoMsg   of ServerClientInfoMessage
-    | ServerClientUpdateMsg of ServerClientUpdateMessage
-    | ServerClientQuitMsg   of ServerClientQuitMessage
-    | ServerClientErrorMsg  of ServerClientErrorMessage
+    | ServerProtocolMsg      of ServerProtocolMessage
+    | ServerWelcomeMsg       of ServerWelcomeMessage
+    | ServerChatMsg          of ServerChatMessage
+    | ServerClientJoinMsg    of ServerClientJoinMessage
+    | ServerClientInfoMsg    of ServerClientInfoMessage
+    | ServerClientUpdateMsg  of ServerClientUpdateMessage
+    | ServerClientQuitMsg    of ServerClientQuitMessage
+    | ServerClientErrorMsg   of ServerClientErrorMessage
+    | ServerCompanyNewMsg    of ServerCompanyNewMessage
+    | ServerCompanyInfoMsg   of ServerCompanyInfoMessage
+    | ServerCompanyUpdateMsg of ServerCompanyUpdateMessage
+    | ServerCompanyRemoveMsg of ServerCompanyRemoveMessage
+
+let private readServerCompanyNew packet =
+    let id, _ = readByte   packet
+    ServerCompanyNewMsg { CompanyId = id }
+
+let private readServerCompanyInfo packet =
+    let id,      pac = readByte   packet
+    let name,    pac = readString pac
+    let manager, pac = readString pac
+    let colorId, pac = readByte   pac
+    let hasPass, pac = readBool   pac
+    let _      , pac = readU32    pac // date started
+    let _      , _   = readBool   pac // is AI
+    let color        = enum<Color>(int colorId)
+    ServerCompanyInfoMsg
+        { CompanyId = id
+          CompanyName = name
+          ManagerName = manager
+          Color = color
+          HasPassword = hasPass }
+        
+let private readServerCompanyUpdate packet =
+    let id,      pac = readByte   packet
+    let name,    pac = readString pac
+    let manager, pac = readString pac
+    let colorId, pac = readByte   pac
+    let hasPass, _   = readBool   pac
+    let color        = enum<Color>(int colorId)
+    ServerCompanyInfoMsg
+        { CompanyId = id
+          CompanyName = name
+          ManagerName = manager
+          Color = color
+          HasPassword = hasPass }
     
-    
+let private readServerCompanyRemove packet =
+    let id      , pac = readByte packet
+    let reasonId, _   = readByte pac
+    let reason        = enum<AdminCompanyRemoveReason>(int reasonId)
+    ServerCompanyRemoveMsg
+        { CompanyId = id
+          Reason    = reason }
+
 let private readServerProtocol packet =
     let version, packet = readByte packet
     let rec readFreq (dict : Map<AdminUpdateType, AdminUpdateFrequency []>) pac =
@@ -127,11 +193,11 @@ let private readServerClientJoin packet =
 
 let private readServerClientInfo packet =
     let clientId, pac = readU32 packet
-    let address, pac = readString pac
-    let name, pac = readString pac
-    let lang, pac = readByte pac
+    let address, pac  = readString pac
+    let name, pac     = readString pac
+    let lang, pac     = readByte pac
     let joinDate, pac = readU32 pac
-    let companyId, _ = readByte pac
+    let companyId, _  = readByte pac
     ServerClientInfoMsg
         { ClientID  = clientId
           Address   = address
@@ -160,12 +226,16 @@ let private readServerClientError packet =
 let packetToMsg packet =
     let typeVal, pac = readByte packet
     match enum<PacketType>(int typeVal) with
-    | PacketType.ADMIN_PACKET_SERVER_PROTOCOL      -> readServerProtocol     pac
-    | PacketType.ADMIN_PACKET_SERVER_WELCOME       -> readServerWelcome      pac
-    | PacketType.ADMIN_PACKET_SERVER_CHAT          -> readServerChat         pac
-    | PacketType.ADMIN_PACKET_SERVER_CLIENT_JOIN   -> readServerClientJoin   pac
-    | PacketType.ADMIN_PACKET_SERVER_CLIENT_INFO   -> readServerClientInfo   pac
-    | PacketType.ADMIN_PACKET_SERVER_CLIENT_UPDATE -> readServerClientUpdate pac
-    | PacketType.ADMIN_PACKET_SERVER_CLIENT_QUIT   -> readServerClientQuit   pac
-    | PacketType.ADMIN_PACKET_SERVER_CLIENT_ERROR  -> readServerClientError  pac
+    | PacketType.ADMIN_PACKET_SERVER_PROTOCOL       -> readServerProtocol      pac
+    | PacketType.ADMIN_PACKET_SERVER_WELCOME        -> readServerWelcome       pac
+    | PacketType.ADMIN_PACKET_SERVER_CHAT           -> readServerChat          pac
+    | PacketType.ADMIN_PACKET_SERVER_CLIENT_JOIN    -> readServerClientJoin    pac
+    | PacketType.ADMIN_PACKET_SERVER_CLIENT_INFO    -> readServerClientInfo    pac
+    | PacketType.ADMIN_PACKET_SERVER_CLIENT_UPDATE  -> readServerClientUpdate  pac
+    | PacketType.ADMIN_PACKET_SERVER_CLIENT_QUIT    -> readServerClientQuit    pac
+    | PacketType.ADMIN_PACKET_SERVER_CLIENT_ERROR   -> readServerClientError   pac
+    | PacketType.ADMIN_PACKET_SERVER_COMPANY_NEW    -> readServerCompanyNew    pac
+    | PacketType.ADMIN_PACKET_SERVER_COMPANY_INFO   -> readServerCompanyInfo   pac
+    | PacketType.ADMIN_PACKET_SERVER_COMPANY_UPDATE -> readServerCompanyUpdate pac
+    | PacketType.ADMIN_PACKET_SERVER_COMPANY_REMOVE -> readServerCompanyRemove pac
     | _ -> failwithf $"PACKET TRANSFORMER ERROR: UNSUPPORTED TYPE - %d{typeVal}"

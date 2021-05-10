@@ -4,6 +4,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "BetterTTD.Network", "src\Be
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "BetterTTD.Actors", "src\BetterTTD.Actors\BetterTTD.Actors.fsproj", "{E1B21AE4-718D-4810-B630-0E638F9C8A10}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "BetterTTD.Console", "BetterTTD.Console\BetterTTD.Console.fsproj", "{20A13B36-BAB4-47D5-853F-018F5B7098DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{E1B21AE4-718D-4810-B630-0E638F9C8A10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1B21AE4-718D-4810-B630-0E638F9C8A10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1B21AE4-718D-4810-B630-0E638F9C8A10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20A13B36-BAB4-47D5-853F-018F5B7098DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20A13B36-BAB4-47D5-853F-018F5B7098DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20A13B36-BAB4-47D5-853F-018F5B7098DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20A13B36-BAB4-47D5-853F-018F5B7098DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
