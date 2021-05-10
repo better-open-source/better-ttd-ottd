@@ -31,7 +31,7 @@ type ServerClientJoinMessage =
     { ClientID        : uint32 }
 
 type ServerClientInfoMessage =
-    { ClientID        : uint32
+    { ClientId        : uint32
       Address         : string
       Name            : string
       Language        : NetworkLanguage
@@ -39,15 +39,15 @@ type ServerClientInfoMessage =
       CompanyId       : byte }
 
 type ServerClientUpdateMessage =
-    { ClientID        : uint32
+    { ClientId        : uint32
       Name            : string
       CompanyId       : byte }
 
 type ServerClientQuitMessage =
-    { ClientID        : uint32 }
+    { ClientId        : uint32 }
 
 type ServerClientErrorMessage =
-    { ClientID        : uint32 }
+    { ClientId        : uint32 }
 
 type ServerCompanyNewMessage =
     { CompanyId       : byte }
@@ -199,7 +199,7 @@ let private readServerClientInfo packet =
     let joinDate, pac = readU32 pac
     let companyId, _  = readByte pac
     ServerClientInfoMsg
-        { ClientID  = clientId
+        { ClientId  = clientId
           Address   = address
           Name      = name
           Language  = enum<NetworkLanguage>(int lang)
@@ -211,17 +211,17 @@ let private readServerClientUpdate packet =
     let name, pac     = readString pac
     let companyId, _  = readByte pac
     ServerClientUpdateMsg
-        { ClientID  = clientId
+        { ClientId  = clientId
           Name      = name
           CompanyId = companyId }
 
 let private readServerClientQuit packet =
     let clientId, _ = readU32 packet
-    ServerClientQuitMsg { ClientID = clientId }
+    ServerClientQuitMsg { ClientId = clientId }
 
 let private readServerClientError packet =
     let clientId, _ = readU32 packet
-    ServerClientErrorMsg { ClientID = clientId }
+    ServerClientErrorMsg { ClientId = clientId }
 
 let packetToMsg packet =
     let typeVal, pac = readByte packet

@@ -2,7 +2,6 @@
 
 open System
 open System.IO
-open System.Timers
 open Akka.FSharp
 open BetterTTD.Network.Packet
 open BetterTTD.PacketTransformer
@@ -34,29 +33,13 @@ let private waitForPacket (stream : Stream) =
     let content = read stream (int size - 2)
     createPacket sizeBuf content
 
-let private initTimedEvent (interval : float) handler =
-    let timer = new Timer(interval)
-    timer.AutoReset <- true
-    timer.Elapsed.Add handler
-    timer.Start()
-
-let private handlePacket (stream : Stream) (mailbox : Actor<_>) =
-    let pac = waitForPacket stream
-    let msg = packetToMsg pac
-    mailbox.Context.Parent <! Messages.PacketReceivedMsg msg
-
 let init (stream : Stream) (mailbox : Actor<_>) =
-    fun _ ->
-        let pac = waitForPacket stream
-        let msg = packetToMsg pac
-        printfn $"%A{msg}"
-        mailbox.Context.Parent <! Messages.PacketReceivedMsg msg
-    |> initTimedEvent (TimeSpan.FromSeconds(1.0).TotalMilliseconds)
-    
     let rec loop () =
         actor {
-            match! mailbox.Receive () with
-            | _ -> return! loop () 
+            let! _  = mailbox.Receive ()
+            let msg = waitForPacket stream |> packetToMsg
+            mailbox.Context.Parent <! Messages.PacketReceivedMsg msg
+            return! loop () 
         }
         
     loop ()
