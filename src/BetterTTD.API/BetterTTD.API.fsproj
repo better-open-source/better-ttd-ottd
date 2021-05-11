@@ -14,8 +14,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\BetterTTD.Actors\BetterTTD.Actors.fsproj" />
-      <ProjectReference Include="..\src\BetterTTD.Network\BetterTTD.Network.fsproj" />
+        <ProjectReference Include="..\BetterTTD.Actors\BetterTTD.Actors.fsproj" />
+        <ProjectReference Include="..\BetterTTD.Network\BetterTTD.Network.fsproj" />
     </ItemGroup>
 
 </Project>

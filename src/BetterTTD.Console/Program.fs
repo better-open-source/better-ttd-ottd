@@ -13,11 +13,11 @@ let main _ =
     let system = Configuration.defaultConfig() |> System.create "tg"
     
     let welcomeRef =
-        Coordinator.init (host, 3980)
+        Coordinator.init (host, 3980, "tg-welcome")
         |> spawn system "welcome-coordinator" 
     
     let vanillaRef =
-        Coordinator.init (host, 3983)
+        Coordinator.init (host, 3983, "tg-vanilla")
         |> spawn system "vanilla-coordinator"
         
     welcomeRef <! AuthorizeMsg { Name = "TG Welcome"; Pass = ""; Version = "1.0" }

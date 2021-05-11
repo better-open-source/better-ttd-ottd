@@ -75,6 +75,7 @@ let configureServices (services : IServiceCollection) =
 
 [<EntryPoint>]
 let main _ =
+    System.Console.OutputEncoding <- System.Text.Encoding.UTF8
     Host.CreateDefaultBuilder()
         .ConfigureWebHostDefaults(
             fun webHostBuilder ->
